@@ -1,4 +1,5 @@
-package com.example.chonstay_android.ui
+package com.example.chonstay_android.ui.Customer
+
 
 import android.annotation.SuppressLint
 import androidx.compose.material.icons.Icons
@@ -22,7 +23,7 @@ import androidx.navigation.compose.rememberNavController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateValueProperty")
 @Composable
-fun TabScreen(navController: NavController) {
+fun CustomerTabScreen(navController: NavController) {
     val tabs = listOf(Icons.Filled.Home, Icons.Filled.Favorite, Icons.Filled.AccountCircle)
     val pagerState = remember { mutableIntStateOf(0) }
 
@@ -58,13 +59,13 @@ fun TabScreen(navController: NavController) {
         when (pagerState.value) {
             0 -> MainScreen(navController)
             1 -> FavoriteScreen(navController)
-            2 -> UserScreen(navController)
+            2 -> CustomerUserScreen(navController)
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewTabLayout() {
-    TabScreen(rememberNavController())
+fun CustomerTabPreview() {
+    CustomerTabScreen(rememberNavController())
 }
