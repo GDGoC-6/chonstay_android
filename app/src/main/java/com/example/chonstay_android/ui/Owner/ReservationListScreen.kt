@@ -1,7 +1,6 @@
 package com.example.chonstay_android.ui.Owner
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -13,39 +12,36 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 
 @ExperimentalLayoutApi
@@ -57,29 +53,20 @@ fun ReservationListScreen() {
         var addStay by remember { mutableStateOf(false) }
 
         if (addStay) {
-            val context = LocalContext.current
             val availablePrograms = listOf("김장", "딸기 수확", "산나물 채취", "농촌 체험", "지역 축제 기획")
             val availableItems = listOf("수고비", "따뜻한 식사", "딸기 제공", "농촌의 생활")
             val selectedPrograms = remember { mutableStateListOf<String>() }
             val selectedItems = remember { mutableStateListOf<String>() }
             var personCount by remember { mutableFloatStateOf(1f) }
-            var showCameraPermissionDialog by remember { mutableStateOf(false) }
             val scrollState = rememberScrollState()
             val maxPersons = 10
             var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+            var name by remember { mutableStateOf("") }
+            var content by remember { mutableStateOf("") }
 
-            val requestPermissionLauncher = rememberUpdatedState(
-                ActivityResultContracts.RequestPermission()
-            )
-
-            // 갤러리 선택 결과를 처리하는 launcher
-            val pickImageLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.PickVisualMedia(),
-                onResult = { uri ->
-                    uri?.let {
-                        selectedImageUri = it
-                    }
-                }
+            val galleryLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.GetContent(),
+                onResult = { uri -> if (uri != null) selectedImageUri = uri }
             )
 
             Column(
@@ -92,9 +79,14 @@ fun ReservationListScreen() {
 
                 Text(text = "촌스테이 이름")
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
-                    label = { Text("이름을 입력해주세요") },
+                    value = name,
+                    onValueChange = { name = it },
+                    label = {
+                        Text(
+                            text = "이름을 입력해주세요",
+                            style = TextStyle(Color.LightGray)
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                 )
@@ -112,12 +104,12 @@ fun ReservationListScreen() {
                             text = location,
                             isSelected = selectedOption == location,
                             onClick = {
-                                selectedOption = location // 선택 시 해당 옵션으로 변경
+                                selectedOption = location
                             }
                         )
                     }
                 }
-                // 1. 프로그램 선택
+
                 Text(text = "프로그램")
                 FlowRow {
                     availablePrograms.forEach { program ->
@@ -135,7 +127,10 @@ fun ReservationListScreen() {
                     }
                 }
 
-                // "예"와 "아니요" 중 하나만 선택 가능하도록 수정된 코드
+                if (selectedPrograms.isNotEmpty()) {
+                    Text("선택된 프로그램: ${selectedPrograms.joinToString(", ")}")
+                }
+
                 Text(text = "숙소 제공")
                 FlowRow {
                     val options = listOf("예", "아니요")
@@ -146,18 +141,12 @@ fun ReservationListScreen() {
                             text = option,
                             isSelected = selectedOption == option,
                             onClick = {
-                                selectedOption = option // 선택 시 해당 옵션으로 변경
+                                selectedOption = option
                             }
                         )
                     }
                 }
 
-                // 선택된 프로그램 표시
-                if (selectedPrograms.isNotEmpty()) {
-                    Text("선택된 프로그램: ${selectedPrograms.joinToString(", ")}")
-                }
-
-                // 2. 제공하는 것 선택
                 Text(text = "제공하는 것")
                 FlowRow {
                     availableItems.forEach { item ->
@@ -175,12 +164,10 @@ fun ReservationListScreen() {
                     }
                 }
 
-                // 선택된 제공 항목 표시
                 if (selectedItems.isNotEmpty()) {
                     Text("선택된 제공 항목: ${selectedItems.joinToString(", ")}")
                 }
 
-                // 3. 인원수 선택
                 Text(text = "인원수")
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -196,8 +183,19 @@ fun ReservationListScreen() {
                     Text(text = "${personCount.toInt()}명")
                 }
 
+                selectedImageUri?.let { uri ->
+                    AsyncImage(
+                        model = uri,
+                        contentDescription = "선택한 이미지",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .background(Color.Gray, RoundedCornerShape(16.dp))
+                    )
+                }
+
                 Button(
-                    onClick = { requestPermission() },
+                    onClick = { galleryLauncher.launch("image/*") },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("사진 업로드")
@@ -205,13 +203,26 @@ fun ReservationListScreen() {
 
                 Text(text = "설명글")
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
-                    label = { Text("설명글을 입력해주세요") },
+                    value = content,
+                    onValueChange = { content = it },
+                    label = {
+                        Text(
+                            text = "설명글을 입력해주세요",
+                            style = TextStyle(Color.LightGray)
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
                 )
+
+                Button(
+                    onClick = {  },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("등록하기")
+                }
+                Spacer(Modifier.height(80.dp))
             }
         } else {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -264,19 +275,6 @@ fun ReservationListScreen() {
     }
 }
 
-fun requestPermission() {
-    if (ContextCompat.checkSelfPermission(
-            LocalContext.current,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-    ) {
-        // 권한이 이미 있다면 바로 갤러리로 이동
-        pickImageLauncher.launch(ActivityResultContracts.PickVisualMedia.Requester.PhotoPicker)
-    } else {
-        // 권한이 없다면 권한 요청
-        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-    }
-}
 
 @Composable
 fun SelectableChip(
@@ -297,21 +295,6 @@ fun SelectableChip(
             color = if (isSelected) Color.White else Color.Black
         )
     }
-}
-
-@Composable
-fun CameraPermissionDialog(onResult: (Boolean) -> Unit) {
-    AlertDialog(
-        onDismissRequest = { onResult(false) },
-        title = { Text("카메라 권한 요청") },
-        text = { Text("이 앱이 카메라를 사용하려면 권한이 필요합니다.") },
-        confirmButton = {
-            TextButton(onClick = { onResult(true) }) { Text("허용") }
-        },
-        dismissButton = {
-            TextButton(onClick = { onResult(false) }) { Text("취소") }
-        }
-    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)

@@ -33,10 +33,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import com.example.chonstay_android.R
+import com.example.chonstay_android.loginUser
 
 @Composable
 fun OnBoardingScreen(navController: NavController) {
-    var id by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     Column(
@@ -69,10 +70,10 @@ fun OnBoardingScreen(navController: NavController) {
                 verticalArrangement = Arrangement.Center
             ) {
                 OutlinedTextField(
-                    value = id,
-                    onValueChange = { id = it },
+                    value = email,
+                    onValueChange = { email = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text(text = "아이디를 입력하세요") }
+                    label = { Text(text = "이메일을 입력하세요") }
                 )
                 Spacer(Modifier.height(16.dp))
                 OutlinedTextField(
@@ -88,7 +89,7 @@ fun OnBoardingScreen(navController: NavController) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button(
                 modifier = Modifier.fillMaxWidth(0.8f),
-                onClick = { navController.navigate("ModeSelect") },
+                onClick = { loginUser(navController, email, password) },
                 colors = ButtonDefaults.buttonColors(
                     Color(107, 142, 35),
                     Color.White
@@ -104,9 +105,7 @@ fun OnBoardingScreen(navController: NavController) {
                 text = "회원가입 하시겠습니까?",
                 style = TextStyle(fontSize = 12.sp),
                 modifier = Modifier
-                    .clickable {
-//                navController.navigate("")
-                    }
+                    .clickable { navController.navigate("SignUpScreen") }
                     .padding(top = 8.dp, bottom = 40.dp)
             )
         }
