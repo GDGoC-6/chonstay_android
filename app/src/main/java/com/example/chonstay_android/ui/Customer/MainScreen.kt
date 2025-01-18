@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,9 +45,22 @@ import com.example.chonstay_android.R
 fun MainScreen(navController: NavController) {
     var locationText by remember { mutableStateOf("") }
     val locations = listOf(
-        "서울", "부산", "대구", "인천", "광주", "대전",
-        "울산", "세종", "경기도", "강원도", "충청북도", "충청남도",
-        "전라북도", "전라남도", "경상북도", "경상남도", "제주도"
+        "부산" to R.drawable.busan,
+        "대구" to R.drawable.daegu,
+        "인천" to R.drawable.incheon,
+        "광주" to R.drawable.gwangju,
+        "대전" to R.drawable.daejeon,
+        "울산" to R.drawable.ulsan,
+        "세종" to R.drawable.sejong,
+        "경기도" to R.drawable.gyeonggido,
+        "강원도" to R.drawable.gangwondo,
+        "충청북도" to R.drawable.chungcheongbugdo,
+        "충청남도" to R.drawable.chungcheongnamdo,
+        "전라북도" to R.drawable.jeonlabugdo,
+        "전라남도" to R.drawable.jeonlanamdo,
+        "경상북도" to R.drawable.gyeongsangbugdo,
+        "경상남도" to R.drawable.gyeongsangnamdo,
+        "제주도" to R.drawable.jejudo
     )
 
     Column(
@@ -92,27 +108,40 @@ fun MainScreen(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(locations) { location ->
-                LocationItem(navController, location)
+                LocationItem(navController, location.first, location.second)
             }
         }
     }
 }
 
 @Composable
-fun LocationItem(navController: NavController, location: String) {
-    Box(
+fun LocationItem(navController: NavController, location: String, image: Int) {
+    Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .aspectRatio(1f)
             .background(Color.Transparent, RoundedCornerShape(16.dp))
-            .clickable { navController.navigate("StayListScreen/${location}") },
-        contentAlignment = Alignment.Center
+            .clickable { navController.navigate("StayListScreen/${location}")},
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(R.drawable.chonstay_logo),
-            contentDescription = ""
+            painter = painterResource(image),
+            contentDescription = "",
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .clip(RoundedCornerShape(16.dp)),
+            contentScale = ContentScale.Crop
         )
-        Text(text = location, style = TextStyle(fontSize = 12.sp))
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = location,
+            style = TextStyle(
+                fontSize = 12.sp,
+                color = Color.Black
+            ),
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
     }
 }
 

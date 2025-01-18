@@ -1,6 +1,9 @@
 package com.example.chonstay_android.ui.Owner
 
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,6 +35,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +45,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import coil3.compose.AsyncImage
 
 @ExperimentalLayoutApi
@@ -61,6 +66,21 @@ fun ReservationListScreen() {
             var showCameraPermissionDialog by remember { mutableStateOf(false) }
             val scrollState = rememberScrollState()
             val maxPersons = 10
+            var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+            val requestPermissionLauncher = rememberUpdatedState(
+                ActivityResultContracts.RequestPermission()
+            )
+
+            // 갤러리 선택 결과를 처리하는 launcher
+            val pickImageLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.PickVisualMedia(),
+                onResult = { uri ->
+                    uri?.let {
+                        selectedImageUri = it
+                    }
+                }
+            )
 
             Column(
                 modifier = Modifier
@@ -74,18 +94,29 @@ fun ReservationListScreen() {
                 OutlinedTextField(
                     value = "",
                     onValueChange = {},
-                    label = { Text("설명글을 입력해주세요") },
+                    label = { Text("이름을 입력해주세요") },
                     modifier = Modifier
                         .fillMaxWidth()
                 )
-                Text(text = "주소")
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
-                    label = { Text("설명글을 입력해주세요") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
+                Text(text = "지역")
+                FlowRow {
+                    val locations = listOf(
+                        "부산", "대구", "인천", "광주", "대전",
+                        "울산", "세종", "경기도", "강원도", "충청북도", "충청남도",
+                        "전라북도", "전라남도", "경상북도", "경상남도", "제주도"
+                    )
+                    var selectedOption by remember { mutableStateOf<String?>(null) }
+
+                    locations.forEach { location ->
+                        SelectableChip(
+                            text = location,
+                            isSelected = selectedOption == location,
+                            onClick = {
+                                selectedOption = location // 선택 시 해당 옵션으로 변경
+                            }
+                        )
+                    }
+                }
                 // 1. 프로그램 선택
                 Text(text = "프로그램")
                 FlowRow {
@@ -166,9 +197,7 @@ fun ReservationListScreen() {
                 }
 
                 Button(
-                    onClick = {
-                        showCameraPermissionDialog = true
-                    },
+                    onClick = { requestPermission() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("사진 업로드")
@@ -183,19 +212,6 @@ fun ReservationListScreen() {
                         .fillMaxWidth()
                         .aspectRatio(1f)
                 )
-
-                if (showCameraPermissionDialog) {
-                    CameraPermissionDialog(
-                        onResult = { granted ->
-                            showCameraPermissionDialog = false
-                            if (granted) {
-                                Toast.makeText(context, "카메라 권한 허용됨", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(context, "카메라 권한 거부됨", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    )
-                }
             }
         } else {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -248,6 +264,19 @@ fun ReservationListScreen() {
     }
 }
 
+fun requestPermission() {
+    if (ContextCompat.checkSelfPermission(
+            LocalContext.current,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
+        // 권한이 이미 있다면 바로 갤러리로 이동
+        pickImageLauncher.launch(ActivityResultContracts.PickVisualMedia.Requester.PhotoPicker)
+    } else {
+        // 권한이 없다면 권한 요청
+        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
+}
 
 @Composable
 fun SelectableChip(
