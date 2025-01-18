@@ -42,7 +42,7 @@ fun TabScreen(navController: NavController) {
     ) {
         when (pagerState.value) {
             0 -> MainScreen(navController)
-            1 -> MapScreen(navController)
+            1 -> FavoriteScreen(navController)
             2 -> UserScreen(navController)
         }
     }
