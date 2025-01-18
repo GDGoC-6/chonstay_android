@@ -4,9 +4,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -18,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -28,7 +32,7 @@ import com.example.chonstay_android.R
 fun LoginScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -39,20 +43,22 @@ fun LoginScreen(navController: NavController) {
             contentDescription = "촌스테이",
             modifier = Modifier
                 .fillMaxWidth(0.4f)
-                .aspectRatio(2 / 1f)
+                .aspectRatio(1f)
         )
 
         AsyncImage(
             model = "",
             contentDescription = "",
             modifier = Modifier
-                .fillMaxSize(0.8f)
+                .fillMaxWidth(0.8f)
                 .aspectRatio(1f)
                 .background(Color.Gray)
         )
 
         Button(
-            modifier = Modifier.fillMaxWidth(0.8f),
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .padding(bottom = 40.dp),
             onClick = { navController.navigate("OnBoardingScreen") },
             colors = ButtonDefaults.buttonColors(
                 Color(107, 142, 35),
