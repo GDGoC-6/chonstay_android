@@ -13,6 +13,7 @@ import com.example.chonstay_android.ui.Customer.StayDetailScreen
 import com.example.chonstay_android.ui.Customer.StayListScreen
 import com.example.chonstay_android.ui.Customer.CustomerTabScreen
 import com.example.chonstay_android.ui.Owner.OwnerTabScreen
+import com.example.chonstay_android.ui.SignUpScreen
 
 @Composable
 fun Navigator() {
@@ -20,6 +21,9 @@ fun Navigator() {
     NavHost(navController = navController, startDestination = "LoginScreen") {
         composable("LoginScreen") {
             LoginScreen(navController)
+        }
+        composable("SignUpScreen") {
+            SignUpScreen(navController)
         }
         composable("OnBoardingScreen") {
             OnBoardingScreen(navController)
@@ -42,7 +46,7 @@ fun Navigator() {
             StayListScreen(navController, location)
         }
         composable(
-            route = "StayDetailScreen/{title}/{location}/{star}",
+            route = "StayDetailScreenA/{title}/{location}/{star}",
             arguments = listOf(navArgument("title") { type = NavType.StringType },
                 navArgument("location") { type = NavType.StringType },
                 navArgument("star") { type = NavType.StringType })

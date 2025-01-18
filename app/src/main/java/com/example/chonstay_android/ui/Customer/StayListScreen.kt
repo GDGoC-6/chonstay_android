@@ -1,5 +1,6 @@
 package com.example.chonstay_android.ui.Customer
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,21 +9,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,16 +38,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import coil3.compose.AsyncImage
+import com.example.chonstay_android.HomePreview
+import com.example.chonstay_android.Value
+import com.example.chonstay_android.getHomePreviews
 
 @Composable
 fun StayListScreen(navController: NavController, location: String) {
     var locationText by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(true) }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    LaunchedEffect(Unit) {
+        getHomePreviews(location) { success, previews ->
+            if (success) {
+                Value.stayList = previews ?: emptyList()
+                Log.d("HomePreview", "데이터 로드 성공: ${Value.stayList}")
+            } else {
+                Value.stayList = emptyList()
+                Log.d("HomePreview", "데이터 로딩 실패")
+            }
+            isLoading = false
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
         BasicTextField(
             value = locationText,
             onValueChange = { locationText = it },
@@ -79,82 +93,67 @@ fun StayListScreen(navController: NavController, location: String) {
             }
         )
 
-        ScrollableLocationList(location)
-
-        AsyncImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .padding(16.dp)
-                .border(0.dp, Color.Transparent, RoundedCornerShape(16.dp))
-                .background(Color.Gray, RoundedCornerShape(16.dp))
-                .clickable { navController.navigate("StayDetailScreen/${"춘스테이"}/${"충청남도 부여군 부여읍 신기정로94번길 17-6"}/${"4.3(64)"}") },
-            model = "",
-            contentDescription = ""
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text(
-                    text = "촌스테이",
-                    style = TextStyle(fontSize = 20.sp)
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(text = "충청남도 부여군 부여읍 신기정로94번길 17-6")
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = ""
-                )
-                Text("4.3(64)")
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(Value.stayList) { stay ->
+                    StayItem(
+                        stay = stay,
+                        onClick = {
+                            navController.navigate(
+                                "StayDetailScreen/${stay.homeName}/${stay.address}/${stay.averageReview}"
+                            )
+                        }
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun ScrollableLocationList(location: String) {
-    val locations = listOf(
-        "부산", "대구", "인천", "광주", "대전",
-        "울산", "세종", "경기도", "강원도", "충청북도", "충청남도",
-        "전라북도", "전라남도", "경상북도", "경상남도", "제주도"
-    )
-    var selectedLocation by remember { mutableStateOf(location) }
-
-    LazyRow(
+fun StayItem(stay: HomePreview, onClick: () -> Unit) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.LightGray)
+            .clickable { onClick() }
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        items(locations) { location ->
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(
-                        if (location == selectedLocation) Color(107, 142, 35)
-                        else Color(192, 200, 176)
-                    )
-                    .clickable { selectedLocation = location }
-                    .padding(horizontal = 24.dp, vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = location,
-                    color = if (location == selectedLocation) Color.White
-                    else Color.Black,
-                )
-            }
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stay.homeName,
+                style = TextStyle(fontSize = 18.sp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stay.address,
+                style = TextStyle(fontSize = 14.sp, color = Color.DarkGray)
+            )
         }
+        Text(
+            text = String.format("%.1f", stay.averageReview),
+            style = TextStyle(fontSize = 16.sp, color = Color.Black)
+        )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

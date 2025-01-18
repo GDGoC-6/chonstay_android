@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,24 +37,45 @@ fun LoginScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        //앱 설명
+        Column(modifier = Modifier.padding(28.dp)) {
+            Spacer(Modifier.height(160.dp))
+            Text(
+                text = "시니어들이 제공하는",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    color = Color(107, 142, 35)
+                )
+            )
+            Text(
+                text = "농촌지역에서의 전통 생활과 문화",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    color = Color(107, 142, 35)
+                )
+            )
 
-        Image(
-            painter = painterResource(R.drawable.chonstay_logo),
-            contentDescription = "촌스테이",
-            modifier = Modifier
-                .fillMaxWidth(0.4f)
-                .aspectRatio(1f)
-        )
+            Image(
+                painter = painterResource(R.drawable.chonstay_logo),
+                contentDescription = "촌스테이",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(28.dp)
+                    .aspectRatio(2 / 1f)
+            )
 
-        AsyncImage(
-            model = "",
-            contentDescription = "",
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .aspectRatio(1f)
-                .background(Color.Gray)
-        )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = "에서 즐기세요",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        color = Color(107, 142, 35)
+                    )
+                )
+            }
+        }
 
         Button(
             modifier = Modifier

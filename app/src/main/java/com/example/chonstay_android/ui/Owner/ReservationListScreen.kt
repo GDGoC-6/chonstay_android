@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,6 +41,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 
 @ExperimentalLayoutApi
@@ -58,6 +61,8 @@ fun ReservationListScreen() {
             val scrollState = rememberScrollState()
             val maxPersons = 10
             var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+            var name by remember { mutableStateOf("") }
+            var content by remember { mutableStateOf("") }
 
             val galleryLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.GetContent(),
@@ -74,9 +79,14 @@ fun ReservationListScreen() {
 
                 Text(text = "촌스테이 이름")
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
-                    label = { Text("이름을 입력해주세요") },
+                    value = name,
+                    onValueChange = { name = it },
+                    label = {
+                        Text(
+                            text = "이름을 입력해주세요",
+                            style = TextStyle(Color.LightGray)
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                 )
@@ -117,6 +127,10 @@ fun ReservationListScreen() {
                     }
                 }
 
+                if (selectedPrograms.isNotEmpty()) {
+                    Text("선택된 프로그램: ${selectedPrograms.joinToString(", ")}")
+                }
+
                 Text(text = "숙소 제공")
                 FlowRow {
                     val options = listOf("예", "아니요")
@@ -131,10 +145,6 @@ fun ReservationListScreen() {
                             }
                         )
                     }
-                }
-
-                if (selectedPrograms.isNotEmpty()) {
-                    Text("선택된 프로그램: ${selectedPrograms.joinToString(", ")}")
                 }
 
                 Text(text = "제공하는 것")
@@ -173,6 +183,17 @@ fun ReservationListScreen() {
                     Text(text = "${personCount.toInt()}명")
                 }
 
+                selectedImageUri?.let { uri ->
+                    AsyncImage(
+                        model = uri,
+                        contentDescription = "선택한 이미지",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .background(Color.Gray, RoundedCornerShape(16.dp))
+                    )
+                }
+
                 Button(
                     onClick = { galleryLauncher.launch("image/*") },
                     modifier = Modifier.fillMaxWidth()
@@ -182,13 +203,26 @@ fun ReservationListScreen() {
 
                 Text(text = "설명글")
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
-                    label = { Text("설명글을 입력해주세요") },
+                    value = content,
+                    onValueChange = { content = it },
+                    label = {
+                        Text(
+                            text = "설명글을 입력해주세요",
+                            style = TextStyle(Color.LightGray)
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
                 )
+
+                Button(
+                    onClick = {  },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("등록하기")
+                }
+                Spacer(Modifier.height(80.dp))
             }
         } else {
             Box(modifier = Modifier.fillMaxSize()) {
