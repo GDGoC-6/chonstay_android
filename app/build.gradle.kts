@@ -23,9 +23,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        addManifestPlaceholders(mapOf("GOOGLE_MAP_API" to GOOGLE_MAP_API))
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        addManifestPlaceholders(mapOf("GOOGLE_MAP_API" to GOOGLE_MAP_API))
     }
 
     buildTypes {
@@ -46,6 +46,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -70,4 +71,9 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
+    implementation(libs.coil.compose)
 }
