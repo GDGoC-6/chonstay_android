@@ -4,18 +4,23 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.chonstay_android.ui.LoginScreen
+import com.example.chonstay_android.ui.OnBoardingScreen
 import com.example.chonstay_android.ui.TabScreen
 
 @Composable
 fun Navigator() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "TabScreen") {
+    NavHost(navController = navController, startDestination = "LoginScreen") {
+        composable("LoginScreen") {
+            LoginScreen(navController)
+        }
+        composable("OnBoardingScreen") {
+            OnBoardingScreen(navController)
+        }
         composable("TabScreen") {
             TabScreen(navController)
         }
-//        composable("AddDisasterScreen") {
-//            AddDisasterScreen(navController)
-//        }
 //        composable(
 //            route = "DisasterDetailScreen/{image}/{text}",
 //            arguments = listOf(
