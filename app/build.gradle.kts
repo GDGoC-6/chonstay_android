@@ -1,8 +1,16 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
+
+val properties = Properties().apply {
+    load(FileInputStream(rootProject.file("local.properties")))
+}
+val GOOGLE_MAP_API = (properties.getProperty("GOOGLE_MAP_API")).replace("\"", "")
 
 android {
     namespace = "com.example.chonstay_android"
@@ -14,6 +22,8 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        addManifestPlaceholders(mapOf("GOOGLE_MAP_API" to GOOGLE_MAP_API))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -58,4 +68,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.maps)
 }
