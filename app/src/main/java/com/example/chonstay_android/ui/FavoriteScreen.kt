@@ -17,8 +17,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun MapScreen(navController: NavController) {
-    val singapore = LatLng(1.35, 103.87)
+fun FavoriteScreen(navController: NavController) {
+    val singapore = LatLng(37.715133, 126.734086)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(singapore, 10f)
     }
@@ -39,5 +39,5 @@ fun MapScreen(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun MapPreview() {
-    MapScreen(rememberNavController())
+    FavoriteScreen(rememberNavController())
 }
