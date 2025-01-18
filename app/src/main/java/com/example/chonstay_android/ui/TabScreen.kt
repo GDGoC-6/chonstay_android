@@ -3,6 +3,7 @@ package com.example.chonstay_android.ui
 import android.annotation.SuppressLint
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
@@ -20,7 +21,7 @@ import androidx.navigation.compose.rememberNavController
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateValueProperty")
 @Composable
 fun TabScreen(navController: NavController) {
-    val tabs = listOf(Icons.Filled.Home, Icons.Filled.LocationOn, Icons.Filled.AccountCircle)
+    val tabs = listOf(Icons.Filled.Home, Icons.Filled.Favorite, Icons.Filled.AccountCircle)
     val pagerState = remember { mutableIntStateOf(0) }
 
     Scaffold(
