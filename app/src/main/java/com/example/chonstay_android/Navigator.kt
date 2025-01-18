@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.chonstay_android.ui.LoginScreen
+import com.example.chonstay_android.ui.ModeSelectScreen
 import com.example.chonstay_android.ui.OnBoardingScreen
 import com.example.chonstay_android.ui.TabScreen
 
@@ -17,6 +18,9 @@ fun Navigator() {
         }
         composable("OnBoardingScreen") {
             OnBoardingScreen(navController)
+        }
+        composable("ModeSelect") {
+            ModeSelectScreen(navController)
         }
         composable("TabScreen") {
             TabScreen(navController)
