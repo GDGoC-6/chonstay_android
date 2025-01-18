@@ -1,12 +1,16 @@
 package com.example.chonstay_android
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.chonstay_android.ui.LoginScreen
 import com.example.chonstay_android.ui.ModeSelectScreen
 import com.example.chonstay_android.ui.OnBoardingScreen
+import com.example.chonstay_android.ui.StayDetailScreen
+import com.example.chonstay_android.ui.StayListScreen
 import com.example.chonstay_android.ui.TabScreen
 
 @Composable
@@ -25,17 +29,15 @@ fun Navigator() {
         composable("TabScreen") {
             TabScreen(navController)
         }
-//        composable(
-//            route = "DisasterDetailScreen/{image}/{text}",
-//            arguments = listOf(
-//                navArgument("image") { type = NavType.StringType },
-//                navArgument("text") { type = NavType.StringType },
-//            )
-//        ) { backStackEntry ->
-//            val image = backStackEntry.arguments?.getString("image").toString()
-//            val text = backStackEntry.arguments?.getString("text").toString()
-//
-//            DisasterDetailScreen(image, text)
-//        }
+        composable(route =  "StayListScreen/{location}",
+            arguments = listOf(navArgument("location"){type = NavType.StringType})
+        ) {
+            val location = it.arguments?.getString("location").toString()
+
+            StayListScreen(navController, location)
+        }
+        composable("StayDetailScreen") {
+            StayDetailScreen()
+        }
     }
 }
