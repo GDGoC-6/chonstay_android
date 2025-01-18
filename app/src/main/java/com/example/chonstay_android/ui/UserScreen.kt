@@ -9,7 +9,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun UserScreen(navigator: NavController) {
+fun UserScreen(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
 
     }
