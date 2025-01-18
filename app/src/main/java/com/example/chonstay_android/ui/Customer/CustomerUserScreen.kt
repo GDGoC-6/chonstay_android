@@ -1,4 +1,4 @@
-package com.example.chonstay_android.ui
+package com.example.chonstay_android.ui.Customer
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +9,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun UserScreen(navController: NavController) {
+fun CustomerUserScreen(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
 
     }
@@ -17,6 +17,6 @@ fun UserScreen(navController: NavController) {
 
 @Preview(showBackground = true)
 @Composable
-fun UserPreview(){
-    UserScreen(rememberNavController())
+fun CustomerUserPreview(){
+    CustomerUserScreen(rememberNavController())
 }

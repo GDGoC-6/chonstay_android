@@ -1,4 +1,4 @@
-package com.example.chonstay_android.ui
+package com.example.chonstay_android.ui.Customer
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column

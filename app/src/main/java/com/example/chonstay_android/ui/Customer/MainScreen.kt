@@ -1,4 +1,4 @@
-package com.example.chonstay_android.ui
+package com.example.chonstay_android.ui.Customer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

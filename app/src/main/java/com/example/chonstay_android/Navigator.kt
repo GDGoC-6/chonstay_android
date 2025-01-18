@@ -9,9 +9,10 @@ import androidx.navigation.navArgument
 import com.example.chonstay_android.ui.LoginScreen
 import com.example.chonstay_android.ui.ModeSelectScreen
 import com.example.chonstay_android.ui.OnBoardingScreen
-import com.example.chonstay_android.ui.StayDetailScreen
-import com.example.chonstay_android.ui.StayListScreen
-import com.example.chonstay_android.ui.TabScreen
+import com.example.chonstay_android.ui.Customer.StayDetailScreen
+import com.example.chonstay_android.ui.Customer.StayListScreen
+import com.example.chonstay_android.ui.Customer.CustomerTabScreen
+import com.example.chonstay_android.ui.Owner.OwnerTabScreen
 
 @Composable
 fun Navigator() {
@@ -26,18 +27,31 @@ fun Navigator() {
         composable("ModeSelect") {
             ModeSelectScreen(navController)
         }
-        composable("TabScreen") {
-            TabScreen(navController)
+        composable("OwnerTabScreen") {
+            OwnerTabScreen(navController)
         }
-        composable(route =  "StayListScreen/{location}",
-            arguments = listOf(navArgument("location"){type = NavType.StringType})
+        composable("CustomerTabScreen") {
+            CustomerTabScreen(navController)
+        }
+        composable(
+            route = "StayListScreen/{location}",
+            arguments = listOf(navArgument("location") { type = NavType.StringType })
         ) {
             val location = it.arguments?.getString("location").toString()
 
             StayListScreen(navController, location)
         }
-        composable("StayDetailScreen") {
-            StayDetailScreen()
+        composable(
+            route = "StayDetailScreen/{title}/{location}/{star}",
+            arguments = listOf(navArgument("title") { type = NavType.StringType },
+                navArgument("location") { type = NavType.StringType },
+                navArgument("star") { type = NavType.StringType })
+        ) {
+            val title = it.arguments?.getString("title").toString()
+            val location = it.arguments?.getString("location").toString()
+            val star = it.arguments?.getString("star").toString()
+
+            StayDetailScreen(title, location, star)
         }
     }
 }

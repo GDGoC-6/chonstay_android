@@ -54,7 +54,7 @@ fun ModeSelectScreen(navController: NavController) {
                 .fillMaxWidth(0.6f)
                 .aspectRatio(1f)
                 .border(1.dp, Color.Black, RoundedCornerShape(16.dp))
-                .clickable { navController.navigate("TabScreen") },
+                .clickable { navController.navigate("OwnerTabScreen") },
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -67,6 +67,7 @@ fun ModeSelectScreen(navController: NavController) {
                 .fillMaxWidth(0.6f)
                 .aspectRatio(1f)
                 .border(1.dp, Color.Black, RoundedCornerShape(16.dp))
+                .clickable { navController.navigate("CustomerTabScreen") },
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
