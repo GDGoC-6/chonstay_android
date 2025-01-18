@@ -3,17 +3,15 @@ package com.example.chonstay_android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import com.example.chonstay_android.ui.LoginScreen
 import com.example.gdgoc_team6.ui.theme.GDGoC_team6Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
             GDGoC_team6Theme {
-                LoginScreen()
+                Navigator()
             }
         }
     }
