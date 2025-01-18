@@ -1,16 +1,17 @@
 package com.example.chonstay_android.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -28,15 +29,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.chonstay_android.R
 
 @Composable
-fun MainScreen(navigator: NavController) {
+fun MainScreen(navController: NavController) {
     var locationText by remember { mutableStateOf("") }
     val locations = listOf(
         "서울", "부산", "대구", "인천", "광주", "대전",
@@ -79,10 +82,9 @@ fun MainScreen(navigator: NavController) {
                 }
             }
         )
-        Spacer(Modifier.height(0.dp))
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(5),
+            columns = GridCells.Fixed(3),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
@@ -90,21 +92,26 @@ fun MainScreen(navigator: NavController) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(locations) { location ->
-                LocationItem(location)
+                LocationItem(navController, location)
             }
         }
     }
 }
 
 @Composable
-fun LocationItem(location: String) {
+fun LocationItem(navController: NavController, location: String) {
     Box(
         modifier = Modifier
-            .size(60.dp)
-            .background(Color.LightGray, RoundedCornerShape(16.dp))
-            .padding(8.dp),
+            .fillMaxSize()
+            .aspectRatio(1f)
+            .background(Color.Transparent, RoundedCornerShape(16.dp))
+            .clickable { navController.navigate("StayListScreen/${location}") },
         contentAlignment = Alignment.Center
     ) {
+        Image(
+            painter = painterResource(R.drawable.chonstay_logo),
+            contentDescription = ""
+        )
         Text(text = location, style = TextStyle(fontSize = 12.sp))
     }
 }
